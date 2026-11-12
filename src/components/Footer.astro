@@ -1,0 +1,25 @@
+---
+import { EMAIL, LMS_URL, PHONE, PHONE_LABEL, PLACE, getCopy, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getCopy(lang);
+const year = 2026;
+---
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span>LF Company</span>
+    <span>{PLACE}</span>
+    <a href={`tel:${PHONE}`}>{PHONE_LABEL}</a>
+    <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+    <a href={LMS_URL} target="_blank" rel="noopener noreferrer">
+      {t.nav.learning}
+      <span class="sr-only"> ({t.nav.learningNew})</span>
+    </a>
+    <span>© {year} LF Company. {t.footer.rights}</span>
+  </div>
+</footer>

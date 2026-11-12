@@ -1,0 +1,124 @@
+---
+import { getImage } from 'astro:assets';
+import '../styles/global.css';
+import '../styles/spectacle.css';
+import '../styles/awwwards.css';
+import '@fontsource/schibsted-grotesk/latin-400.css';
+import '@fontsource/schibsted-grotesk/latin-ext-400.css';
+import '@fontsource/schibsted-grotesk/latin-500.css';
+import '@fontsource/schibsted-grotesk/latin-ext-500.css';
+import '@fontsource/schibsted-grotesk/latin-600.css';
+import '@fontsource/schibsted-grotesk/latin-ext-600.css';
+import '@fontsource/space-grotesk/400.css';
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/600.css';
+import '@fontsource/space-grotesk/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import headerTech from '../assets/header-tech-3d-v1.jpg';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCopy, type Lang } from '../i18n/ui';
+
+const headerBg = await getImage({ src: headerTech, width: 1600, format: 'webp', quality: 70 });
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path: '/' | '/en' | '/contact' | '/en/contact' | '/404';
+}
+
+const { lang, title, description, path } = Astro.props;
+const t = getCopy(lang);
+const site = Astro.site ?? new URL('https://www.lf-company.com');
+const canonical = new URL(path === '/' ? '/' : path, site).href;
+const frHref = new URL(path === '/en' || path === '/' ? '/' : '/contact', site).href;
+const enHref = new URL(path === '/en' || path === '/' ? '/en' : '/en/contact', site).href;
+const ogImage = new URL('/og.jpg', site).href;
+const ogImageAlt = lang === 'fr'
+  ? 'LF Company — La donnée au service du terrain'
+  : 'LF Company — Data that serves the field';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        try {
+          var saved = localStorage.getItem('lf-theme');
+          root.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+        } catch (e) {
+          root.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+    <style is:inline>
+      html { background: #e7ebf0; color: #12171e; }
+      html[data-theme="dark"] { background: #0b1016; color: #e8edf2; }
+    </style>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="fr" href={frHref} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="x-default" href={frHref} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#e7ebf0" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+    <meta property="og:locale:alternate" content={lang === 'fr' ? 'en_GB' : 'fr_FR'} />
+    <meta property="og:site_name" content="LF Company" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      name: 'LF Company',
+      url: site.href.replace(/\/$/, ''),
+      email: 'contact@lf-company.com',
+      telephone: '+33 7 67 82 83 86',
+      image: ogImage,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Levallois-Perret',
+        addressCountry: 'FR',
+      },
+      description,
+    })} />
+  </head>
+  <body style={`--header-tech-image: url('${headerBg.src}')`}>
+    <a class="skip" href="#content">{t.skip}</a>
+    <Header lang={lang} path={path} />
+    <main id="content">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script is:inline>
+      (function () {
+        if (!location.search) return;
+        document.querySelectorAll('a[data-keep-search]').forEach(function (link) {
+          link.search = location.search;
+        });
+      })();
+    </script>
+  </body>
+</html>

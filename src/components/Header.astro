@@ -1,0 +1,122 @@
+---
+import Logo from './Logo.astro';
+import MeshConstellation from './motion/MeshConstellation';
+import {
+  LMS_URL,
+  contactPath,
+  getCopy,
+  homePath,
+  otherLang,
+  type Lang,
+} from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+const t = getCopy(lang);
+const other = otherLang(lang);
+const home = homePath(lang);
+const contact = contactPath(lang);
+const otherHome = path === '/contact' || path === '/en/contact' ? contactPath(other) : homePath(other);
+const onContact = path === '/contact' || path === '/en/contact';
+
+const links = [
+  { href: `${home}#poles`, label: t.nav.poles },
+  { href: `${home}#solutions`, label: t.nav.solutions },
+  { href: `${home}#news`, label: t.nav.news },
+  { href: contact, label: t.nav.contact, current: onContact },
+];
+---
+
+<header class="header header-tech" data-header-mesh>
+  <div class="header-tech-bg" aria-hidden="true"></div>
+  <MeshConstellation client:load className="header-mesh" density={58} interactive shooting />
+  <div class="header-inner">
+    <a class="brand" href={home}>
+      <Logo />
+      <span>LF Company</span>
+    </a>
+    <nav class="desktop-nav" aria-label={t.nav.primary}>
+      {
+        links.map((link) => (
+          <a href={link.href} aria-current={link.current ? 'page' : undefined}>
+            {link.label}
+          </a>
+        ))
+      }
+      <a href={LMS_URL} target="_blank" rel="noopener noreferrer">
+        {t.nav.learning}
+        <span class="sr-only"> ({t.nav.learningNew})</span>
+      </a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang cut" href={otherHome} hrefLang={other} lang={other} data-keep-search aria-label={t.nav.langLabel}>
+        {other === 'en' ? 'EN' : 'FR'}
+      </a>
+      <button
+        class="theme-toggle cut"
+        type="button"
+        data-theme-toggle
+        data-label-light={t.nav.themeLight}
+        data-label-dark={t.nav.themeDark}
+        aria-pressed="false"
+        aria-label={t.nav.themeLight}
+      >
+        <span data-when="light">{t.nav.themeToDark}</span>
+        <span data-when="dark">{t.nav.themeToLight}</span>
+      </button>
+      <a class="button header-write cut" href={contact}>{t.nav.write}</a>
+      <details class="mobile-nav">
+        <summary class="menu-summary cut">
+          <span class="when-closed">{t.nav.menu}</span>
+          <span class="when-open">{t.nav.close}</span>
+        </summary>
+        <div class="mobile-panel">
+          {
+            links.map((link) => (
+              <a href={link.href} aria-current={link.current ? 'page' : undefined}>
+                {link.label}
+              </a>
+            ))
+          }
+          <a href={LMS_URL} target="_blank" rel="noopener noreferrer">
+            {t.nav.learning}
+            <span class="sr-only"> ({t.nav.learningNew})</span>
+          </a>
+          <a href={contact}>{t.nav.write}</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    var button = document.querySelector('[data-theme-toggle]');
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (button) {
+      function sync() {
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        button.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        button.setAttribute('aria-label', dark ? button.getAttribute('data-label-dark') : button.getAttribute('data-label-light'));
+        if (meta) meta.setAttribute('content', dark ? '#0b1016' : '#e7ebf0');
+      }
+      sync();
+      button.addEventListener('click', function () {
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var next = dark ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('lf-theme', next); } catch (e) {}
+        sync();
+      });
+    }
+    document.querySelectorAll('.mobile-nav').forEach(function (menu) {
+      menu.addEventListener('click', function (event) {
+        if (event.target.closest('a')) menu.open = false;
+      });
+    });
+  })();
+</script>

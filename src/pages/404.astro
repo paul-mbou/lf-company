@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCopy } from '../i18n/ui';
+
+const t = getCopy('fr');
+const en = getCopy('en');
+---
+
+<Base lang="fr" title={t.notFound.title} description={t.notFound.text} path="/404">
+  <div class="not-found">
+    <h1>{t.notFound.title}</h1>
+    <p>{t.notFound.text}</p>
+    <div class="hero-actions">
+      <a class="button" href="/">{t.notFound.home}</a>
+      <a class="button button-quiet" href="/contact">{t.notFound.write}</a>
+    </div>
+    <p lang="en">{en.notFound.title} <a href="/en">{en.notFound.home}</a></p>
+  </div>
+</Base>

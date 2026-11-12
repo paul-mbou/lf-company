@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import ContactPage from '../../components/ContactPage.astro';
+import { getCopy } from '../../i18n/ui';
+
+const t = getCopy('en');
+---
+
+<Base lang="en" title={t.contact.title} description={t.contact.lede} path="/en/contact">
+  <ContactPage lang="en" />
+</Base>
