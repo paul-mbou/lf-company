@@ -4,6 +4,10 @@ Site vitrine bilingue (FR/EN) pour **LF Company** — data, apps, systèmes, web
 
 **Live:** [lf-company-five.vercel.app](https://lf-company-five.vercel.app)
 
+![Accueil en ligne](docs/portfolio/live-home.png)
+
+![Contact en ligne](docs/portfolio/live-contact.png)
+
 ![LF Company — social preview](docs/portfolio/00-og-card.jpg)
 
 ## Portfolio
